@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "Movie Form";
+}
+
+@model MovieTracker.Models.MovieResponse
+
+
+<h2>Enter A Movie Into My Collection:</h2>
+
+<div>
+    <form method="post">
+        <label asp-for="Category" name="Category">Category: </label>
+        <input asp-for="Category" /><br />
+
+        <label asp-for="Title" name="Title">Title: </label>
+        <input asp-for="Title" /><br />
+
+        <label asp-for="Year" name="Year">Year: </label>
+        <input asp-for="Year" /><br />
+
+        <label asp-for="Director" name="Director">Director: </label>
+        <input asp-for="Director" /><br />
+
+        <label asp-for="Rating" name="Rating">Rating: </label>
+        <select asp-for="Rating">
+            <option value="G">G</option>
+            <option value="PG">PG</option>
+            <option value="PG-13">PG-13</option>
+            <option value="R">R</option>
+        </select><br />
+
+        <label asp-for="Edited" name="Edited">Edited: </label>
+        <select asp-for="Edited">
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+
+        </select><br />
+
+        <label asp-for="LentTo" name="LentTo">Lent to: </label>
+        <input asp-for="LentTo" /><br />
+
+        <label asp-for="Notes" name="Notes">Notes: </label>
+        <input asp-for="Notes" /><br />
+
+        <input type="submit" value="Submit" />
+
+    </form>
+</div>
+
