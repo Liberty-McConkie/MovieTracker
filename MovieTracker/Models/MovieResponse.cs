@@ -12,19 +12,16 @@ namespace MovieTracker.Models
         [Required]
         public int MovieId { get; set; }
 
-        [Required(ErrorMessage ="This field is required")]
-        public string Category { get; set; }
-
-        [Required(ErrorMessage = "This field is required")]
+        [Required(ErrorMessage = "The Title of the moive is required")]
         public string Title { get; set; }
 
-        [Required(ErrorMessage = "This field is required")]
+        [Required(ErrorMessage = "The year of the movie is required")]
         public ushort Year { get; set; }
 
-        [Required(ErrorMessage = "This field is required")]
+        [Required(ErrorMessage = "The name of the director is required")]
         public string Director { get; set; }
 
-        [Required(ErrorMessage = "This field is required")]
+        [Required(ErrorMessage = "The rating of the movie is required")]
         public string Rating { get; set; }
 
         public bool Edited { get; set; }
@@ -34,5 +31,9 @@ namespace MovieTracker.Models
         [StringLength(25, ErrorMessage = "Notes cannot be longer than 25 characters")]
         public string Notes { get; set; }
 
+        [Required(ErrorMessage = "The category of the movie is required")]
+        //set up foreign key relationship
+        public int CategoryId { get; set; }
+        public Category Category { get; set; }
     }
 }

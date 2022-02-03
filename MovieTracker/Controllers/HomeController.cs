@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MovieTracker.Models;
 using System;
@@ -11,14 +12,13 @@ namespace MovieTracker.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        
+        //Controller
+        private MovieContext daContext { get; set; }
 
-        private MovieContext homeContext { get; set; }
-
-        public HomeController(ILogger<HomeController> logger, MovieContext x)
+        public HomeController(MovieContext x)
         {
-            _logger = logger;
-            homeContext = x;
+            daContext = x;
         }
 
         public IActionResult Index()
@@ -29,15 +29,27 @@ namespace MovieTracker.Controllers
         [HttpGet]
         public IActionResult MovieForm()
         {
+            ViewBag.Category = daContext.Category.ToList();
             return View();
         }
 
         [HttpPost]
         public IActionResult MovieForm(MovieResponse mr)
         {
-            homeContext.Add(mr);
-            homeContext.SaveChanges();
-            return View("MovieSubmittedConfirmation");
+
+
+            if (ModelState.IsValid)
+            {
+                daContext.Add(mr);
+                daContext.SaveChanges();
+                return View("MovieSubmittedConfirmation", mr);
+            }
+            else
+            {
+                ViewBag.Category = daContext.Category.ToList();
+                return View(mr);
+            }
+            
         }
 
         public IActionResult MyPodcasts()
@@ -45,15 +57,48 @@ namespace MovieTracker.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult MovieList ()
         {
-            return View();
+           var movies = daContext.responses
+                .Include(x => x.Category)
+                .ToList();
+            return View(movies);
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        [HttpGet]
+        public IActionResult Edit (int movieid)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            ViewBag.Category = daContext.Category.ToList();
+
+            var movie = daContext.responses.Single(x => x.MovieId == movieid);
+
+            return View("MovieForm", movie);
         }
+        [HttpPost]
+        public IActionResult Edit (MovieResponse x)
+        {
+            daContext.Update(x);
+            daContext.SaveChanges();
+
+            return RedirectToAction("MovieList");
+        }
+        [HttpGet]
+        public IActionResult Delete (int movieid)
+        {
+            var movie = daContext.responses.Single(x => x.MovieId == movieid);
+
+            
+            return View(movie);
+        }
+        [HttpPost]
+        public IActionResult Delete (MovieResponse mr)
+        {
+            daContext.responses.Remove(mr);
+            daContext.SaveChanges();
+
+            return RedirectToAction("MovieList");
+        }
+
+        
     }
 }
